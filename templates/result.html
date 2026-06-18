@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classification Result — FlyGenomics AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header class="navbar">
+        <div class="brand">FlyGenomics AI</div>
+        <nav>
+            <a href="{{ url_for('index') }}">Classifier</a>
+            <form action="{{ url_for('logout') }}" method="GET">
+                <button type="submit" class="link-btn">Log out</button>
+            </form>
+        </nav>
+    </header>
+
+    <main>
+        <div class="card">
+            <h1>Classification Result</h1>
+            <p class="subtitle">Automated Drosophila gender identification complete.</p>
+
+            <div class="specimen-frame">
+                <span class="specimen-badge">SPECIMEN</span>
+                <img src="{{ image_path }}" alt="Uploaded fly specimen image">
+            </div>
+
+            <div class="result-header">
+                <div>
+                    <div class="result-label">INFERENCE OUTPUT</div>
+                    <div class="result-prediction">Predicted Gender: <strong>{{ prediction }}</strong></div>
+                </div>
+                <div class="confidence-block">
+                    <div class="confidence-value">{{ confidence }}%</div>
+                    <div class="confidence-caption">Confidence</div>
+                </div>
+            </div>
+
+            {% for label, prob in probabilities.items() %}
+            <div class="prob-bar">
+                <div class="prob-label">
+                    <span>{{ label.upper() }}</span>
+                    <span class="value">{{ prob }}%</span>
+                </div>
+                <div class="bar-bg">
+                    <div class="bar-fill" data-width="{{ prob }}"></div>
+                </div>
+            </div>
+            {% endfor %}
+
+            <div class="result-actions">
+                <a href="{{ url_for('index') }}" class="btn-primary">Classify another image</a>
+            </div>
+        </div>
+    </main>
+
+    <div class="meta-pills">
+        <span class="pill">Model: MobileNetV2</span>
+        <span class="pill">FlyGenomics AI</span>
+    </div>
+
+    <footer style="margin-top: 18px;">
+        <div>FlyGenomics AI &copy; 2026</div>
+        <div class="links">
+            <span>Final Year Project — FUTO</span>
+        </div>
+    </footer>
+
+    <script>
+        document.querySelectorAll('.bar-fill').forEach(function (bar) {
+            const value = bar.getAttribute('data-width');
+            bar.style.width = value + '%';
+        });
+    </script>
+</body>
+</html>

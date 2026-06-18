@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In — FlyGenomics</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="auth-body">
+    <main class="auth-main">
+        <div class="auth-header">
+            <div class="auth-title">FlyGenomics</div>
+            <div class="auth-subtitle">Advanced Drosophila Research Portal</div>
+        </div>
+
+        <div class="card auth-card">
+            <h1 class="auth-heading">Sign In</h1>
+            <p class="subtitle auth-text">
+                Enter your institutional credentials to access the laboratory workspace.
+            </p>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="flash flash-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form action="{{ url_for('login') }}" method="POST">
+                <div class="form-group">
+                    <label for="email">INSTITUTIONAL EMAIL</label>
+                    <input type="email" id="email" name="email" placeholder="name@university.edu" required />
+                </div>
+
+                <div class="form-group">
+                    <div class="label-row">
+                        <label for="password">PASSWORD</label>
+                    </div>
+                    <input type="password" id="password" name="password" placeholder="••••••••" required />
+                </div>
+
+                <button type="submit" class="btn-primary">Sign In &rarr;</button>
+            </form>
+
+            <hr class="auth-divider">
+
+            <p class="auth-footer-text">
+                Don't have an account? <a href="{{ url_for('signup') }}">Sign up</a>
+            </p>
+        </div>
+
+        <div class="auth-copy">
+            &copy; 2026 FlyGenomics — Final Year Project, FUTO
+        </div>
+    </main>
+</body>
+</html>

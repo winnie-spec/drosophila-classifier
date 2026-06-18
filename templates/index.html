@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlyGenomics AI — Drosophila Gender Classifier</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header class="navbar">
+        <div class="brand">FlyGenomics AI</div>
+        <nav>
+            <a href="{{ url_for('index') }}" class="active">Classifier</a>
+            <form action="{{ url_for('logout') }}" method="GET">
+                <button type="submit" class="link-btn">Log out</button>
+            </form>
+        </nav>
+    </header>
+
+    <main>
+        <div class="card">
+            <div class="icon-badge" aria-hidden="true">&#128300;</div>
+
+            <h1>Drosophila Gender Classifier</h1>
+            <p class="subtitle">
+                Deep learning-based classification of fruit fly gender using
+                MobileNetV2 architecture. Professional research tool for rapid
+                lab specimen identification.
+            </p>
+
+            <form action="{{ url_for('predict') }}" method="POST" enctype="multipart/form-data" id="upload-form">
+                <label for="file-upload" class="upload-box" id="upload-box">
+                    <div class="upload-icon" aria-hidden="true">&#128228;</div>
+                    <div class="upload-text">Drag and drop or click to upload fly image</div>
+                    <div class="upload-hint">PNG or JPG up to 16MB</div>
+                    <div class="file-name" id="file-name"></div>
+                    <input type="file" id="file-upload" name="file" accept=".jpg,.jpeg,.png" required />
+                </label>
+
+                <button type="submit" class="btn-primary">Classify Image</button>
+                <p class="note">Processing is handled locally by the trained model. Images are not shared with third parties.</p>
+            </form>
+
+            <div class="stats-row">
+                <div class="stat-box">
+                    <span class="icon" aria-hidden="true">&#129516;</span>
+                    <div>
+                        <div class="label">Model</div>
+                        <div class="value">MobileNetV2</div>
+                    </div>
+                </div>
+                <div class="stat-box">
+                    <span class="icon" aria-hidden="true">&#9889;</span>
+                    <div>
+                        <div class="label">Validation Accuracy</div>
+                        <div class="value">97.80%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div>FlyGenomics AI &copy; 2026</div>
+        <div class="links">
+            <span>Final Year Project — FUTO</span>
+        </div>
+    </footer>
+
+    <script>
+        const uploadBox = document.getElementById('upload-box');
+        const fileInput = document.getElementById('file-upload');
+        const fileName = document.getElementById('file-name');
+
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length > 0) {
+                fileName.textContent = fileInput.files[0].name;
+            }
+        });
+
+        ['dragover', 'dragleave', 'drop'].forEach((eventName) => {
+            uploadBox.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                if (eventName === 'dragover') {
+                    uploadBox.classList.add('dragover');
+                } else {
+                    uploadBox.classList.remove('dragover');
+                }
+                if (eventName === 'drop' && e.dataTransfer.files.length > 0) {
+                    fileInput.files = e.dataTransfer.files;
+                    fileName.textContent = e.dataTransfer.files[0].name;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

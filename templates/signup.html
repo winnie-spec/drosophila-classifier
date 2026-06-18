@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up — FlyGenomics</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="auth-body">
+    <main class="auth-main">
+        <div class="card auth-card">
+            <div class="icon-badge" aria-hidden="true">&#129516;</div>
+
+            <h1 class="auth-heading">FlyGenomics</h1>
+            <p class="subtitle auth-text">Institutional Research Access</p>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="flash flash-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form action="{{ url_for('signup') }}" method="POST">
+                <div class="form-group">
+                    <label for="full_name">FULL NAME</label>
+                    <input type="text" id="full_name" name="full_name" placeholder="Dr. Sarah Chen" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="email">INSTITUTIONAL EMAIL</label>
+                    <input type="email" id="email" name="email" placeholder="chen.s@university.edu" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="organization">RESEARCH LAB/ORGANIZATION</label>
+                    <input type="text" id="organization" name="organization" placeholder="Genetics Research Wing B" />
+                </div>
+
+                <div class="form-group">
+                    <label for="password">PASSWORD</label>
+                    <input type="password" id="password" name="password" placeholder="••••••••" minlength="8" required />
+                </div>
+
+                <div class="checkbox-row">
+                    <input type="checkbox" id="agree" name="agree" required />
+                    <label for="agree" class="checkbox-label">
+                        I agree to the <a href="#">Research Data Privacy Policy</a>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn-primary">Create Account</button>
+            </form>
+
+            <p class="auth-footer-text">
+                Already have an account? <a href="{{ url_for('login') }}">Log in</a>
+            </p>
+        </div>
+
+        <div class="auth-copy">
+            &copy; 2026 FlyGenomics — Final Year Project, FUTO
+        </div>
+    </main>
+</body>
+</html>
