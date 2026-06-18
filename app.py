@@ -1,5 +1,8 @@
 import os
 import torch
+
+torch.set_num_threads(1)
+
 import torch.nn as nn
 from torchvision import models, transforms
 from PIL import Image
@@ -14,7 +17,7 @@ from werkzeug.utils import secure_filename
 
 # ---------- App setup ----------
 app = Flask(__name__)
-app.config['SECRET_KEY'] = '25505056cf1e42dd0e6a7357ea81719c'
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'change-this-to-a-random-secret-key')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///flygenomics.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = os.path.join('static', 'uploads')
@@ -86,6 +89,7 @@ def allowed_file(filename):
 def predict_image(image_path):
     image = Image.open(image_path).convert('RGB')
     tensor = transform(image).unsqueeze(0).to(DEVICE)
+    image.close()
 
     with torch.no_grad():
         outputs = model(tensor)
@@ -99,6 +103,8 @@ def predict_image(image_path):
         CLASS_NAMES[i]: round(probabilities[i].item() * 100, 2)
         for i in range(len(CLASS_NAMES))
     }
+
+    del tensor, outputs, probabilities
 
     return predicted_class, confidence_pct, all_probs
 
@@ -210,7 +216,11 @@ def predict():
     return redirect(url_for('index'))
 
 
+with app.app_context():
+    db.create_all()
+
+
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    debug_mode = os.environ.get('FLASK_DEBUG', 'false').lower() == 'true'
+    app.run(host='0.0.0.0', port=port, debug=debug_mode)
